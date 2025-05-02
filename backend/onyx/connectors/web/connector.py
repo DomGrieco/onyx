@@ -146,9 +146,21 @@ def get_internal_links(
 def start_playwright() -> Tuple[Playwright, BrowserContext]:
     playwright = sync_playwright().start()
     browser = playwright.chromium.launch(headless=True)
+    
+    # Create context with specific user agent and viewport
+    context = browser.new_context(
+        user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
+        viewport={'width': 1920, 'height': 1080},
+        extra_http_headers={
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+            "Accept-Language": "en-US,en;q=0.9",
+            "sec-ch-ua": '"Not A(Brand";v="99", "Google Chrome";v="121", "Chromium";v="121"',
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": '"Windows"'
+        }
+    )
 
-    context = browser.new_context()
-
+    # Existing OAuth logic
     if (
         WEB_CONNECTOR_OAUTH_CLIENT_ID
         and WEB_CONNECTOR_OAUTH_CLIENT_SECRET
